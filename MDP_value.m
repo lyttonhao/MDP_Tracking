@@ -46,7 +46,7 @@ if tracker.state == 2
         dres_one.state = 2;
         tracker.dres = concatenate_dres(tracker.dres, dres_one);
         % update LK tracker
-        tracker = LK_update(frame_id, tracker, dres_image.Igray{frame_id}, dres_det, 0);
+        tracker = LK_update(frame_id, tracker, dres_image.Igray{frame_id}, dres_det, 0, dres_image);
     else
         tracker.state = 3;
         dres_one.state = 3;
@@ -110,7 +110,7 @@ elseif tracker.state == 3
         end
         tracker.dres = interpolate_dres(tracker.dres, dres_one);
         % update LK tracker
-        tracker = LK_update(frame_id, tracker, dres_image.Igray{frame_id}, dres_det, 1);           
+        tracker = LK_update(frame_id, tracker, dres_image.Igray{frame_id}, dres_det, 1, dres_image);           
     else
         % no association
         tracker.state = 3;

@@ -14,7 +14,11 @@ seq_name = opt.kitti_train_seqs{seq_idx};
 seq_set = 'training';
 
 % read detections
-filename = fullfile(opt.kitti, seq_set, 'det_02', [seq_name '.txt']);
+if opt.kitti_own == 0
+    filename = fullfile(opt.kitti, seq_set, 'det_02', [seq_name '.txt']);
+else
+    filename = fullfile(opt.kitti_det, [seq_name '.txt']);
+end
 dres_det = read_kitti2dres(filename);
 
 % read ground truth
@@ -23,7 +27,7 @@ dres_gt = read_kitti2dres(filename);
 y_gt = dres_gt.y + dres_gt.h;
 
 % collect true positives and false alarms from detections
-num = numel(dres_det.fr);
+num = numel(dres_det.fr)
 labels = zeros(num, 1);
 overlaps = zeros(num, 1);
 for i = 1:num
@@ -45,6 +49,9 @@ for i = 1:num
         labels(i) = -1;
     end
 end
+sum(labels == -1)
+sum(labels == 0)
+sum(labels == 1)
 
 % build the training sequences
 ids = unique(dres_gt.id);

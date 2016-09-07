@@ -10,7 +10,7 @@ opt.root = pwd;
 
 % path for MOT benchmark
 mot_paths = {'/capri5/Projects/Multitarget_Tracking/MOTbenchmark', ...
-    '/scail/scratch/u/yuxiang/MOTbenchmark'};
+    '/scail/scratch/u/yuxiang/MOTbenchmark', '/home/yhli/tracking/sort/benchmarks'};
 for i = 1:numel(mot_paths)
     if exist(mot_paths{i}, 'dir')
         opt.mot = mot_paths{i};
@@ -20,7 +20,7 @@ end
 
 opt.mot2d = '2DMOT2015';
 opt.results = 'results';
-opt.results_kitti = 'results_kitti';
+opt.results_kitti = 'results_kitti_1';
 
 opt.mot2d_train_seqs = {'TUD-Stadtmitte', 'TUD-Campus', 'PETS09-S2L1', ...
     'ETH-Bahnhof', 'ETH-Sunnyday', 'ETH-Pedcross2', 'ADL-Rundle-6', ...
@@ -33,13 +33,17 @@ opt.mot2d_test_seqs = {'TUD-Crossing', 'PETS09-S2L2', 'ETH-Jelmoli', ...
 opt.mot2d_test_nums = [201, 436, 440, 1194, 219, 450, 500, 625, 209, 1059, 450];
 
 % path for KITTI tracking dataset
-kitti_paths = {'/capri5/Projects/KITTI_Tracking'};
+kitti_paths = {'../sort_kitti/benchmarks/kitti/'};
 for i = 1:numel(kitti_paths)
     if exist(kitti_paths{i}, 'dir')
         opt.kitti = kitti_paths{i};
         break;
     end
 end
+
+opt.kitti_own = 1;
+opt.kitti_det = '/home/yhli/tracking/sort_kitti/det_results/0/mot_train/';
+opt.kitti_test_det = '/home/yhli/tracking/sort_kitti/det_results/0/mot_test/';
 
 opt.kitti_train_seqs = {'0000', '0001', '0002', '0003', '0004', '0005', ...
     '0006', '0007', '0008', '0009', '0010', '0011', '0012', '0013', '0014', ...
@@ -105,3 +109,16 @@ opt.max_pass = 2;
 opt.max_occlusion = 50;
 opt.exit_threshold = 0.95;
 opt.tracked = 5;
+
+addpath('/home/yhli/re-identification/re-id/mxnet/matlab/');
+opt.use_model = 1;
+opt.appf_patchsize = [192 96];
+opt.appf_featsize = 1024;
+opt.appf_model = '/rawdata/lytton/models/re-id/reid-0-extract';
+opt.appf_model_epoch = 50;
+opt.appf_mean = '/rawdata/lytton/models/re-id/reid_mean.mat';
+
+opt.appf_car_patchsize = [192, 256];
+opt.appf_car_model = '/rawdata/lytton/models/re-id/reid-kitti-car';
+opt.appf_car_model_epoch = 50;
+opt.appf_car_mean = '/rawdata/lytton/models/re-id/kitti_car_mean.mat';

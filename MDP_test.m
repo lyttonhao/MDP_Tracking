@@ -85,7 +85,16 @@ else
     end
 
     % read detections
-    filename = fullfile(opt.kitti, seq_set, 'det_02', [seq_name '.txt']);
+    if opt.kitti_own == 0
+        filename = fullfile(opt.kitti, seq_set, 'det_02', [seq_name '.txt']);
+    else
+        if strcmp(seq_set, 'testing'),
+            folder = opt.kitti_test_det;
+        else
+            folder = opt.kitti_det;
+        end
+        filename = fullfile(folder, [seq_name '.txt'])
+    end
     dres_det = read_kitti2dres(filename);    
 
     if strcmp(seq_set, 'training') == 1
@@ -103,6 +112,7 @@ end
 
 % intialize tracker
 I = dres_image.I{1};
+tracker = load_appf_model(tracker, opt);
 tracker = MDP_initialize_test(tracker, size(I,2), size(I,1), dres_det, is_show);
 
 % for each frame
@@ -186,6 +196,11 @@ for fr = 1:seq_num
         f = MDP_feature_active(tracker, dres_one);
         % prediction
         label = svmpredict(1, f, tracker.w_active, '-q');
+       % if dres_one.r < 0.7
+       %     label  = -1;
+       % else
+       %     label = 1;
+       % end
         % make a decision
         if label < 0
             continue;
@@ -253,7 +268,7 @@ else
         fid = fopen(filename, 'w');
         fprintf(fid, '%s empty %06d %06d\n', seq_name, 0, seq_num);
         fclose(fid);
-        system('python evaluate_tracking_kitti.py results_kitti');
+        system(sprintf('python evaluate_tracking_kitti.py %s', opt.results_kitti));
     end
     
     % save results

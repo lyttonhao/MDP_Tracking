@@ -116,8 +116,21 @@ end
 
 % compute pattern similarity
 if bb_isdef(tracker.bb)
-    pattern = generate_pattern(dres_image.Igray{frame_id}, tracker.bb, tracker.patchsize);
+    if tracker.use_model == 0
+        pattern = generate_pattern(dres_image.Igray{frame_id}, tracker.bb, tracker.patchsize);
+    else
+        if strcmp('Car', tracker.dres.type(1)) || strcmp('Van', tracker.dres.type(1)) || ...
+            strcmp('Truck', tracker.dres.type(1))
+                pattern = generate_pattern1(dres_image.I{frame_id}, tracker.bb, tracker.appf_featsize, ...
+                    tracker.appf_car_patchsize, tracker.appf_car_model, tracker.appf_car_mean);
+        else
+            pattern = generate_pattern1(dres_image.I{frame_id}, tracker.bb, tracker.appf_featsize, ...
+            tracker.appf_patchsize, tracker.appf_model, tracker.appf_mean);
+        end
+    end
     nccs = distance(pattern, tracker.patterns, 1); % measure NCC to positive examples
+    %diff = repmat(pattern, [1, size(tracker.patterns, 2)]) - tracker.patterns;
+    %nccs = 1.0-sqrt(sum(diff.*diff, 1));
     tracker.nccs = nccs';
 else
     tracker.nccs = zeros(tracker.num, 1);

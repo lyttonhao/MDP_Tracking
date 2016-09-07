@@ -192,7 +192,7 @@ for t = 1:num_train
                 end
                 tracker.dres = interpolate_dres(tracker.dres, dres_one);
                 % update LK tracker
-                tracker = LK_update(fr, tracker, dres_image.Igray{fr}, dres_associate, 1);
+                tracker = LK_update(fr, tracker, dres_image.Igray{fr}, dres_associate, 1, dres_image);
                 
             else
                 tracker.state = 3;

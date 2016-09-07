@@ -60,3 +60,5 @@ tracker.weight_association = opt.weight_association;
 
 % display results or not
 tracker.is_show = opt.is_show;
+
+tracker = load_appf_model(tracker, opt);

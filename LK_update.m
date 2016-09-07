@@ -6,7 +6,7 @@
 % --------------------------------------------------------
 %
 % update the LK tracker
-function tracker = LK_update(frame_id, tracker, img, dres_det, is_change_anchor)
+function tracker = LK_update(frame_id, tracker, img, dres_det, is_change_anchor, dres_image)
 
 medFBs = tracker.medFBs;
 if is_change_anchor == 0
@@ -24,8 +24,21 @@ tracker.x1(index) = tracker.bb(1);
 tracker.y1(index) = tracker.bb(2);
 tracker.x2(index) = tracker.bb(3);
 tracker.y2(index) = tracker.bb(4);
-tracker.patterns(:,index) = generate_pattern(img, tracker.bb, tracker.patchsize);
-
+if tracker.use_model == 0
+    tracker.patterns(:,index) = generate_pattern(img, tracker.bb, tracker.patchsize);
+else
+        if strcmp('Car', tracker.dres.type(1)) || strcmp('Van', tracker.dres.type(1)) || ...
+            strcmp('Truck', tracker.dres.type(1))
+                tracker.patterns(:, index) = generate_pattern1(dres_image.I{frame_id}, tracker.bb, tracker.appf_featsize, ...
+                    tracker.appf_car_patchsize, tracker.appf_car_model, tracker.appf_car_mean);
+        else
+            tracker.patterns(:, index) = generate_pattern1(dres_image.I{frame_id}, tracker.bb, tracker.appf_featsize, ...
+                tracker.appf_patchsize, tracker.appf_model, tracker.appf_mean);
+        end
+   % tracker.patterns(:, index) = generate_pattern1(dres_image.I{frame_id}, tracker.bb, tracker.appf_featsize, ...
+   %             tracker.appf_patchsize, tracker.appf_model, tracker.appf_mean);
+end
+            
 % update images and boxes
 BB = [tracker.x1(index); tracker.y1(index); tracker.x2(index); tracker.y2(index)];
 [I_crop, BB_crop] = LK_crop_image_box(img, BB, tracker);

@@ -46,8 +46,13 @@ for i = 1:num
 end
 
 % initialize the patterns
-img = dres_image.Igray{frame_id};
-tracker.patterns = generate_pattern(img, bb, tracker.patchsize);
+if tracker.use_model == 0
+    img = dres_image.Igray{frame_id};
+    tracker.patterns = generate_pattern(img, bb, tracker.patchsize);
+else
+    tracker.patterns = generate_pattern1(dres_image.I{frame_id}, bb, tracker.appf_featsize, ...
+                tracker.appf_patchsize, tracker.appf_model, tracker.appf_mean);
+end
 
 % box overlap history
 tracker.bb_overlaps = ones(num, 1);

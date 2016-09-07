@@ -258,7 +258,7 @@ for fr = 1:seq_num
                 end
                 trackers{ind}.dres = interpolate_dres(trackers{ind}.dres, dres_one);
                 % update LK tracker
-                trackers{ind} = LK_update(fr, trackers{ind}, dres_image.Igray{fr}, dres_associate, 1);              
+                trackers{ind} = LK_update(fr, trackers{ind}, dres_image.Igray{fr}, dres_associate, 1, dres_image);              
             end
         end
     end
