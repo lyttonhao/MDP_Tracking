@@ -69,7 +69,14 @@ elseif tracker.state == 3
 
         m = size(features, 1);
         labels = -1 * ones(m, 1);
-        [labels, ~, probs] = svmpredict(labels, features, tracker.w_occluded, '-b 1 -q');
+        probs = zeros(m, 2);
+        if tracker.use_occluded_xgboost == 0
+            [labels, ~, probs] = svmpredict(labels, features, tracker.w_occluded, '-b 1 -q');
+        else
+            if numel(tracker.f_occluded) > 0
+                [labels, probs] = test_xgboost(features, tracker.data_tmp, tracker.w_occluded);
+            end
+        end
 
         probs(flag == 0, 1) = 0;
         probs(flag == 0, 2) = 1;

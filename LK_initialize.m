@@ -76,9 +76,16 @@ tracker.ratios = zeros(num, 1);
 
 % initialize features for occluded state
 if isempty(tracker.w_occluded) == 1
-    features = [ones(1, tracker.fnum_occluded); zeros(1, tracker.fnum_occluded)];
-    labels = [+1; -1];
-    tracker.f_occluded = features;
-    tracker.l_occluded = labels;
-    tracker.w_occluded = svmtrain(labels, features, '-c 1 -q -g 1 -b 1');
+    if tracker.use_occluded_xgboost == 0
+        features = [ones(1, tracker.fnum_occluded);zeros(1, tracker.fnum_occluded)];
+        labels = [+1; -1];
+        tracker.f_occluded = features;
+        tracker.l_occluded = labels;
+        tracker.w_occluded = svmtrain(labels, features, '-c 1 -q -g 1 -b 1');
+    else
+        tracker.w_occluded = sprintf('%s/xgb/occluded.model', tracker.results_kitti);
+        tracker.f_occluded = [];
+        tracker.l_occluded = [];
+        %train_xgboost(tracker.f_occluded, tracker.l_occluded, tracker.data_tmp, tracker.w_occluded);
+    end
 end

@@ -195,7 +195,11 @@ for fr = 1:seq_num
         dres_one = sub(dres, index(i));
         f = MDP_feature_active(tracker, dres_one);
         % prediction
-        label = svmpredict(1, f, tracker.w_active, '-q');
+        if tracker.use_active_xgboost == 0
+            label = svmpredict(1, f, tracker.w_active, '-q');
+        else
+            [label, ~] = test_xgboost(f, tracker.data_tmp, tracker.w_active);
+        end
        % if dres_one.r < 0.7
        %     label  = -1;
        % else

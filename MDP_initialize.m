@@ -19,13 +19,32 @@ tracker.max_height = max(dres_det.h);
 tracker.max_score = max(dres_det.r);
 tracker.fb_factor = opt.fb_factor;
 
+tracker.results_kitti = opt.results_kitti;
+%xgboost
+tracker.use_active_xgboost = opt.use_active_xgboost;
+tracker.use_occluded_xgboost = opt.use_occluded_xgboost;
+
+if tracker.use_active_xgboost == 1 || tracker.use_occluded_xgboost == 1
+    folder = sprintf('%s/xgb/', opt.results_kitti)
+    if exist(folder, 'dir') == 0
+        mkdir(folder);
+    end
+    tracker.data_tmp = opt.data_tmp;
+end
+
 % active
 tracker.fnum_active = 6;
 factive = MDP_feature_active(tracker, dres_det);
 index = labels ~= 0;
 tracker.factive = factive(index,:);
 tracker.lactive = labels(index);
-tracker.w_active = svmtrain(tracker.lactive, tracker.factive, '-c 1 -q');
+if tracker.use_active_xgboost == 0
+    tracker.w_active = svmtrain(tracker.lactive, tracker.factive, '-c 1 -q');
+else
+    folder = sprintf('%s/xgb/', opt.results_kitti);
+    tracker.w_active = sprintf('%s/active.model', folder);
+    train_xgboost(tracker.factive, tracker.lactive, tracker.data_tmp, tracker.w_active);
+end
 
 % initial state
 tracker.prev_state = 1;

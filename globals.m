@@ -20,7 +20,7 @@ end
 
 opt.mot2d = '2DMOT2015';
 opt.results = 'results';
-opt.results_kitti = 'results_kitti_1';
+opt.results_kitti = 'results_kitti_2';
 
 opt.mot2d_train_seqs = {'TUD-Stadtmitte', 'TUD-Campus', 'PETS09-S2L1', ...
     'ETH-Bahnhof', 'ETH-Sunnyday', 'ETH-Pedcross2', 'ADL-Rundle-6', ...
@@ -111,7 +111,7 @@ opt.exit_threshold = 0.95;
 opt.tracked = 5;
 
 addpath('/home/yhli/re-identification/re-id/mxnet/matlab/');
-opt.use_model = 1;
+opt.use_model = 0;
 opt.appf_patchsize = [192 96];
 opt.appf_featsize = 1024;
 opt.appf_model = '/rawdata/lytton/models/re-id/reid-0-extract';
@@ -122,3 +122,9 @@ opt.appf_car_patchsize = [192, 256];
 opt.appf_car_model = '/rawdata/lytton/models/re-id/reid-kitti-car';
 opt.appf_car_model_epoch = 50;
 opt.appf_car_mean = '/rawdata/lytton/models/re-id/kitti_car_mean.mat';
+
+
+opt.use_active_xgboost = 0;
+opt.use_occluded_xgboost = 1;
+opt.data_tmp = sprintf('%s/xgb/data_tmp.mat', opt.results_kitti);
+opt
