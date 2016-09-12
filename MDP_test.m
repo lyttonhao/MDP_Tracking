@@ -96,6 +96,10 @@ else
         filename = fullfile(folder, [seq_name '.txt'])
     end
     dres_det = read_kitti2dres(filename);    
+    
+    if opt.use_extra_feat == 1
+        dres_det = cal_extra_feat(dres_det);
+    end
 
     if strcmp(seq_set, 'training') == 1
         % read ground truth

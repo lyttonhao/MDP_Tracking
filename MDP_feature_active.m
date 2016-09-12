@@ -16,3 +16,7 @@ f(:,3) = dres.w / tracker.max_width;
 f(:,4) = dres.h / tracker.max_height;
 f(:,5) = dres.r / tracker.max_score;
 f(:,6) = 1;
+if tracker.use_extra_feat
+    f(:,7) = dres.max_overlap;
+    f(:,8) = dres.cnt_overlap;
+end

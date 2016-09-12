@@ -31,6 +31,13 @@ for i = 1:m
         f(10) = tracker.scores(1) / tracker.max_score;
         f(11) = dres_one.ratios(1);
         f(12) = exp(-dres_one.distances(1));
+        if tracker.use_extra_feat == 1
+            f(13) = dres_one.max_overlap;
+            f(14) = dres_one.cnt_overlap;
+            if f(13) == -1
+                fprintf('err');
+            end
+        end
     else
         f = zeros(1, tracker.fnum_occluded);
     end

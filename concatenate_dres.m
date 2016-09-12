@@ -12,6 +12,10 @@ else
     if isfield(dres2, 'detid') == 0
         dres2.detid = dres2.id;
     end
+    if isfield(dres2, 'max_overlap') == 0
+        dres2.max_overlap = -1;
+        dres2.cnt_overlap = -1;
+    end
     n = fieldnames(dres1);
     for i = 1:length(n),
         f = n{i};

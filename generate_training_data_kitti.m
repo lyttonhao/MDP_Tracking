@@ -26,6 +26,9 @@ filename = fullfile(opt.kitti, seq_set, 'label_02', [seq_name '.txt']);
 dres_gt = read_kitti2dres(filename);
 y_gt = dres_gt.y + dres_gt.h;
 
+if opt.use_extra_feat == 1
+    dres_det = cal_extra_feat(dres_det);
+end
 % collect true positives and false alarms from detections
 num = numel(dres_det.fr)
 labels = zeros(num, 1);

@@ -11,6 +11,9 @@ function tracker = MDP_initialize(I, dres_det, labels, opt)
 image_width = size(I,2);
 image_height = size(I,1);
 
+
+tracker.use_extra_feat = opt.use_extra_feat;
+
 % normalization factor for features
 tracker.image_width = image_width;
 tracker.image_height = image_height;
@@ -34,6 +37,9 @@ end
 
 % active
 tracker.fnum_active = 6;
+if tracker.use_extra_feat == 1
+    tracker.fnum_active = tracker.fnum_active + 2;
+end
 factive = MDP_feature_active(tracker, dres_det);
 index = labels ~= 0;
 tracker.factive = factive(index,:);
@@ -54,6 +60,9 @@ tracker.state = 1;
 tracker.fnum_tracked = 2;
 
 tracker.fnum_occluded = 12;
+if tracker.use_extra_feat == 1
+    tracker.fnum_occluded = tracker.fnum_occluded + 2;
+end
 tracker.w_occluded = [];
 tracker.f_occluded = [];
 tracker.l_occluded = [];
@@ -81,3 +90,4 @@ tracker.weight_association = opt.weight_association;
 tracker.is_show = opt.is_show;
 
 tracker = load_appf_model(tracker, opt);
+
