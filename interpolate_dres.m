@@ -13,6 +13,10 @@ if isempty(dres2) == 1
     return;
 end
 
+if isfield(dres2, 'detid') == 0
+    dres2.detid = dres2.id;
+end
+
 index = find(dres1.state == 2);
 if isempty(index) == 0
     ind = index(end);

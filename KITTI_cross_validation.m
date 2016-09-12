@@ -37,7 +37,14 @@ for i = 1:N
         % online training
         for j = 1:num
             fprintf('Online training on sequence: %s\n', opt.kitti_train_seqs{idx_train{j}});
-            tracker = MDP_train(idx_train{j}, tracker, is_kitti);
+            [tracker, samples] = MDP_train(idx_train{j}, tracker, is_kitti);
+            if opt.sav_samples == 1
+                folder = sprintf('%s/samples', opt.sav_samples_folder);
+                if exist(folder) == 0
+                    mkdir(folder);
+                end
+                save(sprintf('%s/%s_samples.mat', folder, opt.kitti_train_seqs{idx_train{j}}),'samples');
+            end
         end
         fprintf('%d training examples after online training\n', size(tracker.f_occluded, 1));
         
@@ -49,6 +56,10 @@ for i = 1:N
         fprintf('load tracker from file %s\n', filename);
     end
     
+    if opt.sav_samples == 1
+        continue;
+    end
+        
     % testing
     idx_test = seq_idx_test{i};
     % number of testing sequences

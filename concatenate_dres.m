@@ -9,6 +9,9 @@ function dres_new = concatenate_dres(dres1, dres2)
 if isempty(dres2) == 1
     dres_new = dres1;
 else
+    if isfield(dres2, 'detid') == 0
+        dres2.detid = dres2.id;
+    end
     n = fieldnames(dres1);
     for i = 1:length(n),
         f = n{i};

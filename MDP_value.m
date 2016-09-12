@@ -6,8 +6,9 @@
 % --------------------------------------------------------
 %
 % MDP value function
-function [tracker, qscore, f] = MDP_value(tracker, frame_id, dres_image, dres_det, index_det)
+function [tracker, qscore, f, sel_det] = MDP_value(tracker, frame_id, dres_image, dres_det, index_det)
 
+sel_det = 0;
 % tracked, decide to tracked or occluded
 if tracker.state == 2
     % extract features with LK tracking
@@ -86,6 +87,7 @@ elseif tracker.state == 3
         label = labels(ind);
         f = features(ind,:);
 
+        sel_det = index_det(ind);
         dres_one = sub(dres_det, index_det(ind));
         tracker = LK_associate(frame_id, dres_image, dres_one, tracker);
     end

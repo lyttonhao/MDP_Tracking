@@ -37,6 +37,7 @@ fclose(fid);
 % build the dres structure for detections
 dres.fr = C{1} + 1;  % 1-based frame
 dres.id = C{2} + 1;  % 1-based id
+dres.detid = C{2} + 1;
 dres.type = C{3};
 dres.x = C{7};
 dres.y = C{8};

@@ -6,11 +6,13 @@
 % --------------------------------------------------------
 %
 % training MDP
-function tracker = MDP_train(seq_idx, tracker, is_kitti)
+function [tracker, samples] = MDP_train(seq_idx, tracker, is_kitti)
 
 if nargin < 3
     is_kitti = 0;
 end
+
+samples = zeros(0, 13);
 
 is_show = 0;   % set is_show to 1 to show tracking results in training
 is_save = 1;   % set is_save to 1 to save trained tracker
@@ -225,7 +227,7 @@ while 1
             if dres_gt.covered(index_gt) ~= 0
                 index_det = [];
             end
-            [tracker, ~, f] = MDP_value(tracker, fr, dres_image, dres, index_det);
+            [tracker, ~, f, sel_det] = MDP_value(tracker, fr, dres_image, dres, index_det);
 
             if is_show
                 figure(1);
@@ -238,11 +240,24 @@ while 1
 
             if isempty(index_det) == 0
                 % compute reward
-                [reward, label, f, is_end] = MDP_reward_occluded(fr, f, dres_image, ...
-                    dres_gt, dres, index_det, tracker, opt, is_text);
+                [reward, label, f, is_end, sel_det] = MDP_reward_occluded(fr, f, dres_image, ...
+                    dres_gt, dres, index_det, tracker, opt, is_text, sel_det);
 
                 % update weights if negative reward
                 if reward == -1
+                    index = find(tracker.flags ~= 2);
+                    samples(end+1:end+numel(index), 1:6) = ...
+                        repmat([dres.detid(sel_det), dres.fr(sel_det), dres.x(sel_det),...
+                         dres.y(sel_det), dres.w(sel_det), dres.h(sel_det)], [numel(index), 1]);
+                    r = size(samples, 1);
+                    l = r - numel(index) + 1;
+                    samples(l:r, 7) = tracker.target_id; 
+                    samples(l:r, 8:12) = ...
+                        [tracker.frame_ids(index), tracker.x1(index), tracker.y1(index),...
+                         tracker.x2(index) - tracker.x1(index), tracker.y2(index) - tracker.y1(index)];
+                    samples(l:r, 13) = label;
+                                          
+                                        
                     tracker.f_occluded(end+1,:) = f;
                     tracker.l_occluded(end+1) = label;
                     if tracker.use_occluded_xgboost == 0

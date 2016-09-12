@@ -35,7 +35,8 @@ for i = 1:num
     index = find(dres_gt.fr == fr);
     if isempty(index) == 0
         overlap = calc_overlap(dres_det, i, dres_gt, index);
-        o = max(overlap);
+        [o, I] = max(overlap);
+        dres_det.detid(i) = dres_gt.id(index(I));
         if o < opt.overlap_neg
             labels(i) = -1;
         elseif o > opt.overlap_pos

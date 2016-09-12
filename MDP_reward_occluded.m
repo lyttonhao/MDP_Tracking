@@ -6,8 +6,8 @@
 % --------------------------------------------------------
 %
 % compute reward in tracked state
-function [reward, label, f, is_end] = MDP_reward_occluded(fr, f, dres_image, dres_gt, ...
-    dres, index_det, tracker, opt, is_text)
+function [reward, label, f, is_end, sel_det] = MDP_reward_occluded(fr, f, dres_image, dres_gt, ...
+    dres, index_det, tracker, opt, is_text, sel_det)
 
 is_end = 0;
 label = 0;
@@ -48,6 +48,7 @@ if max(overlap) > opt.overlap_pos
                 label = 1;
                 % extract features
                 [~, ind] = max(overlap);
+                sel_det = index_det(ind);
                 dres_one = sub(dres, index_det(ind));
                 f = MDP_feature_occluded(fr, dres_image, dres_one, tracker);
                 if is_text
