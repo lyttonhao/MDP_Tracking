@@ -50,8 +50,16 @@ if tracker.use_model == 0
     img = dres_image.Igray{frame_id};
     tracker.patterns = generate_pattern(img, bb, tracker.patchsize);
 else
-    tracker.patterns = generate_pattern1(dres_image.I{frame_id}, bb, tracker.appf_featsize, ...
+        if strcmp('Car', dres.type(ind)) || strcmp('Van', dres.type(ind)) || ...
+            strcmp('Truck', dres.type(ind))
+                tracker.patterns = generate_pattern1(dres_image.I{frame_id}, bb, tracker.appf_featsize, ...
+                    tracker.appf_car_patchsize, tracker.appf_car_model, tracker.appf_car_mean);
+        else
+            tracker.patterns = generate_pattern1(dres_image.I{frame_id}, bb, tracker.appf_featsize, ...
                 tracker.appf_patchsize, tracker.appf_model, tracker.appf_mean);
+        end
+  %  tracker.patterns = generate_pattern1(dres_image.I{frame_id}, bb, tracker.appf_featsize, ...
+   %             tracker.appf_patchsize, tracker.appf_model, tracker.appf_mean);
 end
 
 % box overlap history
